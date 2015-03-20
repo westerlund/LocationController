@@ -9,9 +9,9 @@
 import UIKit
 import CoreLocation
 
-class LocationController: NSObject, CLLocationManagerDelegate {
+public class LocationController: NSObject, CLLocationManagerDelegate {
     var didUpdateLocation: ((location: CLLocation) -> Void)?
-
+    
     private let accuracy: Double = 150
     private let locationManager = CLLocationManager()
     private var cancellableBlock: dispatch_block_t?
@@ -39,14 +39,14 @@ class LocationController: NSObject, CLLocationManagerDelegate {
     class func hasGPSAccess() -> Bool {
         let status = CLLocationManager.authorizationStatus()
         switch status {
-        case CLAuthorizationStatus.Authorized:
+        case CLAuthorizationStatus.AuthorizedWhenInUse:
             return true
         default:
             return false
         }
     }
     
-    class func canRequestAccess() -> Bool {
+    public class func canRequestAccess() -> Bool {
         let status = CLLocationManager.authorizationStatus()
         switch status {
         case CLAuthorizationStatus.NotDetermined:
@@ -56,28 +56,27 @@ class LocationController: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    class func requestAccess() {
+    public class func requestWhenInUseAccess() {
+        LocationController.shared().locationManager.requestWhenInUseAuthorization()
+    }
+    
+    public class func requestAlwaysAccess() {
         LocationController.shared().locationManager.requestAlwaysAuthorization()
     }
     
-    func requestAccess(completion: (status: CLAuthorizationStatus) -> ()) {
-        didUpdateAuthorizationStatusBlock = completion
-        LocationController.requestAccess()
-    }
-     
-    func startUpdatingLocation() {
+    public func startUpdatingLocation() {
         locationManager.startUpdatingLocation()
     }
     
-    func startMonitoringSignificantLocationChanges() {
+    public func startMonitoringSignificantLocationChanges() {
         locationManager.startMonitoringSignificantLocationChanges()
     }
     
-    func stopUpdatingLocation() {
+    public func stopUpdatingLocation() {
         locationManager.stopUpdatingLocation()
     }
     
-    func fetchBestLocationWithTimeout(timeout: Double, done: ((location: CLLocation) -> Void)) {
+    public func fetchBestLocationWithTimeout(timeout: Double, done: ((location: CLLocation) -> Void)) {
         skipBlock = false
         startUpdatingLocation()
         locations = [CLLocation]()
@@ -97,7 +96,7 @@ class LocationController: NSObject, CLLocationManagerDelegate {
         dispatch_after(time, dispatch_get_main_queue(), cancellableBlock)
     }
     
-    class func shared() -> LocationController {
+    public class func shared() -> LocationController {
         struct Static {
             static var instance: LocationController?
             static var once: dispatch_once_t = 0
@@ -116,19 +115,19 @@ class LocationController: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    public func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         NSNotificationCenter.defaultCenter().postNotificationName("gps",
             object: nil)
         if didUpdateAuthorizationStatusBlock != nil {
             didUpdateAuthorizationStatusBlock!(status: status)
         }
         // Why whould we ask for access here? We should use this selector to update the UI
-//        if status == .NotDetermined {
-//            locationManager.requestAlwaysAuthorization()
-//        }
+        //        if status == .NotDetermined {
+        //            locationManager.requestAlwaysAuthorization()
+        //        }
     }
     
-    func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
+    public func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
         println(error)
     }
 }
