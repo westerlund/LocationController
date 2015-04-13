@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "LocationController"
-  s.version      = "0.0.1"
+  s.version      = "0.1.0"
   s.summary      = "LocationController is a nifty tool for getting the location"
 
   s.description  = <<-DESC
@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.author             = { "Simon Westerlund" => "s@simonwesterlund.se" }
   s.social_media_url   = "http://twitter.com/wesslansimon"
   s.platform     = :ios, "8.0"
-  s.source       = { :git => "https://github.com/westerlund/LocationController.git", :tag => "0.0.1" }
+  s.source       = { :git => "https://github.com/westerlund/LocationController.git", :tag => "0.1.0" }
 
   s.source_files  = "Source/*.swift"
   s.framework  = "CoreLocation"
