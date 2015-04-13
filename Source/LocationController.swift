@@ -92,8 +92,10 @@ public class LocationController: NSObject, CLLocationManagerDelegate {
                 }
             }
         }
-        let time = dispatch_time(DISPATCH_TIME_NOW, Int64(timeout * Double(NSEC_PER_SEC)))
-        dispatch_after(time, dispatch_get_main_queue(), cancellableBlock)
+        if let cancellableBlock = cancellableBlock {
+            let time = dispatch_time(DISPATCH_TIME_NOW, Int64(timeout * Double(NSEC_PER_SEC)))
+            dispatch_after(time, dispatch_get_main_queue(), cancellableBlock)
+        }
     }
     
     public class func shared() -> LocationController {
@@ -108,10 +110,12 @@ public class LocationController: NSObject, CLLocationManagerDelegate {
         return Static.instance!
     }
     
-    func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [CLLocation]!) {
-        if let location = locations.last {
-            didUpdateLocation?(location: location)
-            self.locations.append(location)
+    public func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
+        if let location: AnyObject = locations.last {
+            if let location = location as? CLLocation {
+                didUpdateLocation?(location: location)
+                self.locations.append(location)
+            }
         }
     }
     
