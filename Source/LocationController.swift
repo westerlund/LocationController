@@ -36,10 +36,10 @@ public class LocationController: NSObject, CLLocationManagerDelegate {
     private var didUpdateAuthorizationStatusBlock: ((status: CLAuthorizationStatus) -> ())?
     private var didFetchBestLocation: ((location: CLLocation) -> Void)?
     
-    class func hasGPSAccess() -> Bool {
+    public class func hasGPSAccess() -> Bool {
         let status = CLLocationManager.authorizationStatus()
         switch status {
-        case CLAuthorizationStatus.AuthorizedWhenInUse:
+        case CLAuthorizationStatus.AuthorizedWhenInUse, CLAuthorizationStatus.AuthorizedAlways:
             return true
         default:
             return false
