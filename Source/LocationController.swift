@@ -34,7 +34,7 @@ public class LocationController: NSObject, CLLocationManagerDelegate {
         }
     }
     private var didUpdateAuthorizationStatusBlock: ((status: CLAuthorizationStatus) -> ())?
-    private var didFetchBestLocation: ((location: CLLocation) -> Void)?
+    private var didFetchBestLocation: ((location: CLLocation?) -> Void)?
     
     public class func hasGPSAccess() -> Bool {
         let status = CLLocationManager.authorizationStatus()
@@ -76,11 +76,11 @@ public class LocationController: NSObject, CLLocationManagerDelegate {
         locationManager.stopUpdatingLocation()
     }
     
-    public func fetchBestLocationWithTimeout(timeout: Double, done: ((location: CLLocation) -> Void)) {
+    public func fetchBestLocationWithTimeout(timeout: Double, done: ((location: CLLocation?) -> Void)) {
         skipBlock = false
-        startUpdatingLocation()
         locations = [CLLocation]()
         didFetchBestLocation = done
+        startUpdatingLocation()
         
         cancellableBlock = {
             if self.skipBlock == false {
@@ -89,6 +89,8 @@ public class LocationController: NSObject, CLLocationManagerDelegate {
                         return a.horizontalAccuracy < b.horizontalAccuracy
                     })
                     done(location: sortedLocations[0])
+                } else {
+                    done(location: nil)
                 }
             }
         }
@@ -132,6 +134,14 @@ public class LocationController: NSObject, CLLocationManagerDelegate {
     }
     
     public func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
+        
+        if didFetchBestLocation != nil {
+            skipBlock = true
+            didFetchBestLocation!(location: nil)
+            didFetchBestLocation = nil
+            stopUpdatingLocation()
+        }
+        
         println(error)
     }
 }
