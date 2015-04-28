@@ -12,7 +12,7 @@ import CoreLocation
 public class LocationController: NSObject, CLLocationManagerDelegate {
     var didUpdateLocation: ((location: CLLocation) -> Void)?
     
-    private let accuracy: Double = 150
+    public var accuracy: Double = 150
     private let locationManager = CLLocationManager()
     private var cancellableBlock: dispatch_block_t?
     private var skipBlock = false
