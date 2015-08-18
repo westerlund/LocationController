@@ -19,7 +19,7 @@ public class LocationController: NSObject, CLLocationManagerDelegate {
     private var locations:[CLLocation] = [CLLocation]() {
         didSet {
             if locations.count > 0 {
-                let sortedLocations = sorted(locations, { (a, b) -> Bool in
+                let sortedLocations = locations.sort({ (a, b) -> Bool in
                     return a.horizontalAccuracy < b.horizontalAccuracy
                 })
                 if sortedLocations[0].horizontalAccuracy <= self.accuracy {
@@ -85,7 +85,7 @@ public class LocationController: NSObject, CLLocationManagerDelegate {
         cancellableBlock = {
             if self.skipBlock == false {
                 if self.locations.count > 0 {
-                    let sortedLocations = sorted(self.locations, { (a, b) -> Bool in
+                    let sortedLocations = self.locations.sort({ (a, b) -> Bool in
                         return a.horizontalAccuracy < b.horizontalAccuracy
                     })
                     done(location: sortedLocations[0])
@@ -112,7 +112,7 @@ public class LocationController: NSObject, CLLocationManagerDelegate {
         return Static.instance!
     }
     
-    public func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
+    public func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location: AnyObject = locations.last {
             if let location = location as? CLLocation {
                 didUpdateLocation?(location: location)
@@ -121,7 +121,7 @@ public class LocationController: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    public func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    public func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         NSNotificationCenter.defaultCenter().postNotificationName("gps",
             object: nil)
         if didUpdateAuthorizationStatusBlock != nil {
@@ -133,7 +133,7 @@ public class LocationController: NSObject, CLLocationManagerDelegate {
         //        }
     }
     
-    public func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
+    public func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
         
         if didFetchBestLocation != nil {
             skipBlock = true
@@ -142,6 +142,6 @@ public class LocationController: NSObject, CLLocationManagerDelegate {
             stopUpdatingLocation()
         }
         
-        println(error)
+        print(error)
     }
 }
