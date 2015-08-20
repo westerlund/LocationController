@@ -18,6 +18,6 @@ Pod::Spec.new do |s|
   s.framework  = "CoreLocation"
   s.requires_arc = true
 
-  #s.ios.deployment_target = "8.0"
-  #s.watchos.deployment_target = "2.0"
+  s.ios.deployment_target = "8.0"
+  s.watchos.deployment_target = "2.0"
 end
