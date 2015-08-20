@@ -12,10 +12,12 @@ Pod::Spec.new do |s|
   s.license      = "WTFPL"
   s.author             = { "Simon Westerlund" => "s@simonwesterlund.se" }
   s.social_media_url   = "http://twitter.com/wesslansimon"
-  s.platform     = :ios, "8.0"
   s.source       = { :git => "https://github.com/westerlund/LocationController.git", :tag => "0.1.0" }
 
   s.source_files  = "Source/*.swift"
   s.framework  = "CoreLocation"
   s.requires_arc = true
+
+  s.ios.deployment_target = '8.0'
+  s.watchos.deployment_target = '2.0'
 end
